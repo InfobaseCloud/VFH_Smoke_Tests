@@ -1,5 +1,5 @@
 {
-  "name": "Firsthand Smoke Tests",
+  "name": "firsthand-smoke-tests",
   "version": "1.0.0",
   "description": "Cypress Test Automation",
   "main": "index.js",

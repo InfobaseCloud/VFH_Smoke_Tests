@@ -152,7 +152,7 @@ describe("Firsthand Smoke Suit", function () {
     cy.contains(Messagetosend)
   });
 
-  it('Should log in with valid credentials to Public platform', function () {
+  it('Should verify hoizantal Tab bar on rankings page ', function () {
     cy.visit("https://vaultcom.uat.firsthand.co");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.contains("Access valuable content to drive your career forward").should('be.visible')
@@ -610,6 +610,7 @@ describe("Firsthand Smoke Suit", function () {
     cy.get('#top-navigation-item-2 > .text-nowrap > a').click({ force: true });
     cy.xpath("(//button[contains(.,'Purchase Options')])[15]").click({ force: true });
     cy.xpath("//button[normalize-space()='Add to Cart']").click({ force: true });
+    cy.wait(5000);
     cy.get("div#cart-box-toggle").click({ force: true });
     getOrderSummaryandCheckOut()
     cy.checkoutlogin("charansaireddy3@gmail.com", "Charan@123");
