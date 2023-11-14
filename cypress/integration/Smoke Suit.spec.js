@@ -9,7 +9,7 @@ import { faker } from '@faker-js/faker';
 describe("Firsthand Smoke Suit", function () {
 
   beforeEach(function () {
-    cy.viewport('macbook-16')
+    cy.viewport(1920, 1080);
 
   })
 
@@ -165,6 +165,151 @@ describe("Firsthand Smoke Suit", function () {
     cy.get('@tabs').eq(3).should('not.have.class', 'active');
     cy.get('@tabs').eq(4).should('not.have.class', 'active');
     cy.get('@tabs').eq(5).should('not.have.class', 'active');
+  });
+
+
+  it('should navigate to all top navigation items', () => {
+    const navigationItems = [
+      { index: 0, url: '/careers/rankings' },
+      { index: 1, url: '/library/blogs-employment-news' },
+      { index: 2, url: '/vault-guides' },
+      { index: 3, url: '/careers/professions' },
+      { index: 4, url: '/most-prestigious-internship-rankings' },
+      { index: 5, url: '/vault-law' },
+      { index: 6, url: '/library/collections/resumes-cover-letters' },
+    ];
+
+    cy.visit("https://vaultcom.uat.firsthand.co");
+    // Iterate through each navigation item
+    navigationItems.forEach((item) => {
+      // Click on the navigation item
+      cy.get(`#top-navigation-item-${item.index} a`).click({force: true});
+
+      // Assert the URL of the corresponding page
+      cy.url().should('include', item.url);
+
+      
+      cy.go('back');
+    });
+  });
+
+  it('should interact with the jumbotron elements on Platform Landing page', () => {
+    cy.visit("https://vaultcom.uat.firsthand.co");
+    // Assert the existence of the jumbotron and its elements
+    cy.get('#jumbotron').should('exist');
+    cy.get('#jumbotron-title').should('exist');
+    cy.get('#jumbotron-sub-title').should('exist');
+    cy.get('#jumbotron-button-0').should('exist');
+    cy.get('#jumbotron-button-1').should('exist');
+    cy.get('#jumbotron-button-2').should('exist');
+
+    // Assert the content of the jumbotron elements
+    cy.get('#jumbotron-title').should('have.text', 'Build the Best Career for You');
+    cy.get('#jumbotron-sub-title').should('have.text', 'Find and grow a career that aligns with your skillset, interests, values, and goals.');
+
+    // Click on the buttons in the jumbotron and assert the resulting URL
+    cy.get('#jumbotron-button-0').click();
+    cy.url().should('include', '/intern-resource-center');    
+    cy.go('back'); 
+
+    cy.get('#jumbotron-button-1').click();
+    cy.url().should('include', '/careers/rankings');
+    
+    cy.go('back'); 
+
+    cy.get('#jumbotron-button-2').click();
+    cy.url().should('include', '/vault-guides');
+   
+  });
+
+  it('should interact with the top-ranked employers section', () => {
+    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.get('#top-ranked-employers').should('exist');
+    cy.get('#top-ranked-employers-title').should('exist');
+    cy.get('#top-ranked-employers-item-0').should('exist');
+    cy.get('#top-ranked-employers-item-1').should('exist');
+    cy.get('#top-ranked-employers-item-2').should('exist');
+    cy.get('#top-ranked-employers-item-3').should('exist');
+
+    
+    cy.get('#top-ranked-employers-title').should('have.text', 'Research Our Top-Ranked Employers');
+
+   
+    cy.get('#top-ranked-employers-item-0 a').invoke('removeAttr', 'target').click();
+    cy.url().should('include', '/company-profiles/management-strategy/bain-company');
+    
+    
+    cy.go('back'); 
+    
+    cy.get('#top-ranked-employers-item-1 a').invoke('removeAttr', 'target').click();
+    cy.url().should('include', '/company-profiles/pharmaceuticals-and-biotechnology/abbott');
+    
+    
+    cy.go('back'); 
+    
+    cy.get('#top-ranked-employers-item-2 a').invoke('removeAttr', 'target').click();
+    cy.url().should('include', '/company-profiles/commercial-banking-and-investment-banking/morgan-stanley');
+    
+    
+    cy.go('back'); 
+    
+    cy.get('#top-ranked-employers-item-3 a').invoke('removeAttr', 'target').click();
+    cy.url().should('include', '/company-profiles/accounting/bdo-usa');
+    
+    
+  });
+
+
+  it('should interact with the newsletter form and Submit ', () => {
+    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.get('#newsletter-form').should('exist');
+    cy.get('#newsletter-form-marketing-insights').should('exist');
+    cy.get('#newsletter-form > h2').should('have.text', 'Fresh insights, rankings, and jobs straight to your inbox! ');
+
+   
+    const emailid = faker.internet.email().toLocaleLowerCase()
+        
+
+        cy.get('div:nth-of-type(1) > .p-0 > .Checkbox_checkbox__LWvcK.me-3 > .d-none').as('generalCheckbox');
+        // Check the checkbox
+        cy.get('@generalCheckbox').scrollIntoView().check({ force: true }).should('be.checked');
+
+        cy.get('div:nth-of-type(2) > .p-0 > .Checkbox_checkbox__LWvcK.me-3 > .d-none').as('lawCheckbox');
+        // Check the checkbox
+        cy.get('@lawCheckbox').scrollIntoView().check({ force: true }).should('be.checked');
+
+        cy.get("input#email-id").scrollIntoView().should('be.visible').type(emailid);
+
+        cy.get("button#newsletter-form-button-submit").scrollIntoView().should('be.visible').click();
+
+        cy.xpath("//div[@class='go946087465'][contains(.,'Subscribed')]").should('be.visible').and('contain.text', 'Subscribed')
+  });
+
+
+  it('should validate the content and links of the Best Internships section', () => {
+    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.get('#best-internships').should('exist');
+    cy.get('#best-internships-title').should('have.text', 'Explore Top Internship Programs');
+
+    // Assert the existence of each internship item
+    cy.get('#best-internships-item-0').should('exist');
+    cy.get('#best-internships-item-1').should('exist');
+    cy.get('#best-internships-item-2').should('exist');
+    cy.get('#best-internships-item-3').should('exist');
+
+    // Assert the content of each internship item
+    cy.get('#best-internships-item-0 h3').should('have.text', 'Infosys InStep Internship Program');
+    cy.get('#best-internships-item-1 h3').should('have.text', 'The Home Depot Internship Program');
+    cy.get('#best-internships-item-2 h3').should('have.text', 'Eide Bailly Accounting & Technology Internship Programs');
+    cy.get('#best-internships-item-3 h3').should('have.text', 'UScellular Experience Possibility: Internship Program');
+
+    // Assert the correctness of the internship links
+    cy.get('#best-internships-item-0 a').should('have.attr', 'href', '/internship-program/consulting/infosys-instep-internship-program/internship-opportunities');
+    cy.get('#best-internships-item-1 a').should('have.attr', 'href', '/internship-program/retail/the-home-depot-internship-program/internship-opportunities');
+    cy.get('#best-internships-item-2 a').should('have.attr', 'href', '/internship-program/accounting/eide-bailly-audit-tax-internship-program/internship-opportunities');
+    cy.get('#best-internships-item-3 a').should('have.attr', 'href', '/internship-program/telecommunications/uscellular-internship/internship-opportunities');
+
+    
   });
 
   //Rankings Page
