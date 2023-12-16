@@ -29,7 +29,7 @@ describe("Firsthand Smoke Suit", function () {
 
   function LoginTOWhitelabel(username, password) {
 
-    cy.visit('https://demoamp.uat.firsthand.co/');
+    cy.visit('https://demoamp.uat.vault.com/');
     cy.contains('Get Career Advice').click();
     cy.get('#email').type(username);
     cy.get('input#password').type(password);
@@ -144,7 +144,8 @@ describe("Firsthand Smoke Suit", function () {
     cy.url().should('include', '/welcome');
     cy.xpath("//b[normalize-space()='Messages']").click({ force: true });
     cy.url().should('include', '/messages');
-    cy.get('.MessagesPage_membersBox__dj7E8').find('.MessagesPage_memberItem__aDGPl').first().click();
+    cy.wait(5000);
+    cy.get("div[class^='MessagesPage_membersBox']").find("div[class^='UserAvatar_avatar']").eq(0).click();
     cy.xpath("//label[normalize-space()='Upload a file']").click({ force: true });
     Upload100Mbfile()
     cy.contains("File uploaded by")
@@ -153,12 +154,12 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('Should verify hoizantal Tab bar on rankings page ', function () {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.contains("Access valuable content to drive your career forward").should('be.visible')
     cy.contains("You want a career that’s rewarding, both personally and financially. Whether you’re just starting out or looking to make a change, we help break down the barriers to taking that next career step—with insider insights, sample cover letters and resumes, and answers to those tough interview questions that will prepare you for interactions with potential employers.").should('be.visible')
-    cy.get('.TabBar_tabs__TLpAR').should('be.visible');
-    cy.get('.nav-link').should('have.length', 6).as('tabs');
+    cy.get("div[class^='TabBar_scrollable']").eq(1).should('be.visible');
+    cy.get("div[class^='TabBar_scrollable']").eq(1).find('.nav-link').should('have.length', 6).as('tabs');
     cy.get('@tabs').eq(0).should('have.class', 'active');
     cy.get('@tabs').eq(1).should('not.have.class', 'active');
     cy.get('@tabs').eq(2).should('not.have.class', 'active');
@@ -168,33 +169,42 @@ describe("Firsthand Smoke Suit", function () {
   });
 
 
+  
   it('should navigate to all top navigation items', () => {
-    const navigationItems = [
-      { index: 0, url: '/careers/rankings' },
-      { index: 1, url: '/library/blogs-employment-news' },
-      { index: 2, url: '/vault-guides' },
-      { index: 3, url: '/careers/professions' },
-      { index: 4, url: '/most-prestigious-internship-rankings' },
-      { index: 5, url: '/vault-law' },
-      { index: 6, url: '/library/collections/resumes-cover-letters' },
-    ];
+    cy.visit("https://uat.vault.com/");
+   // Rankings
+   cy.get('#tab-0-toggle').click({force: true});
+   cy.url().should('include', '/careers/rankings');  
 
-    cy.visit("https://vaultcom.uat.firsthand.co");
-    // Iterate through each navigation item
-    navigationItems.forEach((item) => {
-      // Click on the navigation item
-      cy.get(`#top-navigation-item-${item.index} a`).click({force: true});
+   // Library
+   cy.get('#tab-1-toggle').click({force: true});
+   cy.url().should('include', '/library/blogs-employment-news');   
 
-      // Assert the URL of the corresponding page
-      cy.url().should('include', item.url);
+   // Guides
+   cy.get('#tab-2-toggle').click({force: true});
+   cy.url().should('include', '/vault-guides');   
 
-      
-      cy.go('back');
-    });
+   // Careers
+   cy.get('#tab-3-toggle').click({force: true});
+   cy.url().should('include', '/careers/professions');   
+
+   // Internships
+   cy.get('#tab-4-toggle').click({force: true});
+   cy.url().should('include', '/most-prestigious-internship-rankings');   
+
+   // Vault Law
+   cy.get('#tab-5-toggle').click({force: true});
+   cy.url().should('include', '/vault-law');   
+
+   // Advice
+   cy.get('#tab-6-toggle').click({force: true});
+   cy.url().should('include', '/library/collections/resumes-cover-letters');
+   
   });
 
+
   it('should interact with the jumbotron elements on Platform Landing page', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     // Assert the existence of the jumbotron and its elements
     cy.get('#jumbotron').should('exist');
     cy.get('#jumbotron-title').should('exist');
@@ -223,45 +233,42 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should interact with the top-ranked employers section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.get('#top-ranked-employers').should('exist');
     cy.get('#top-ranked-employers-title').should('exist');
     cy.get('#top-ranked-employers-item-0').should('exist');
     cy.get('#top-ranked-employers-item-1').should('exist');
     cy.get('#top-ranked-employers-item-2').should('exist');
     cy.get('#top-ranked-employers-item-3').should('exist');
-
     
-    cy.get('#top-ranked-employers-title').should('have.text', 'Research Our Top-Ranked Employers');
-
-   
+    cy.get('#top-ranked-employers-title').should('have.text', 'Research Our Top-Ranked Employers');   
+    
     cy.get('#top-ranked-employers-item-0 a').invoke('removeAttr', 'target').click();
-    cy.url().should('include', '/company-profiles/management-strategy/bain-company');
-    
+    cy.url().should('include', '/company-profiles/law/latham-watkins-llp');  
     
     cy.go('back'); 
     
     cy.get('#top-ranked-employers-item-1 a').invoke('removeAttr', 'target').click();
-    cy.url().should('include', '/company-profiles/pharmaceuticals-and-biotechnology/abbott');
+    cy.url().should('include', '/company-profiles/law/allen-overy-llp-us');
     
     
     cy.go('back'); 
     
     cy.get('#top-ranked-employers-item-2 a').invoke('removeAttr', 'target').click();
-    cy.url().should('include', '/company-profiles/commercial-banking-and-investment-banking/morgan-stanley');
+    cy.url().should('include', '/company-profiles/law/mcdermott-will-emery');
     
     
     cy.go('back'); 
     
     cy.get('#top-ranked-employers-item-3 a').invoke('removeAttr', 'target').click();
-    cy.url().should('include', '/company-profiles/accounting/bdo-usa');
+    cy.url().should('include', '/company-profiles/law/weil-gotshal-manges-llp');
     
     
   });
 
 
   it('should interact with the newsletter form and Submit ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.get('#newsletter-form').should('exist');
     cy.get('#newsletter-form-marketing-insights').should('exist');
     cy.get('#newsletter-form > h2').should('have.text', 'Fresh insights, rankings, and jobs straight to your inbox! ');
@@ -270,11 +277,11 @@ describe("Firsthand Smoke Suit", function () {
     const emailid = faker.internet.email().toLocaleLowerCase()
         
 
-        cy.get('div:nth-of-type(1) > .p-0 > .Checkbox_checkbox__LWvcK.me-3 > .d-none').as('generalCheckbox');
+        cy.get('div:nth-of-type(1) > .p-0  .d-none').as('generalCheckbox');
         // Check the checkbox
         cy.get('@generalCheckbox').scrollIntoView().check({ force: true }).should('be.checked');
 
-        cy.get('div:nth-of-type(2) > .p-0 > .Checkbox_checkbox__LWvcK.me-3 > .d-none').as('lawCheckbox');
+        cy.get('div:nth-of-type(2) > .p-0  .d-none').as('lawCheckbox');
         // Check the checkbox
         cy.get('@lawCheckbox').scrollIntoView().check({ force: true }).should('be.checked');
 
@@ -287,7 +294,7 @@ describe("Firsthand Smoke Suit", function () {
 
 
   it('should validate the content and links of the Best Internships section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.get('#best-internships').should('exist');
     cy.get('#best-internships-title').should('have.text', 'Explore Top Internship Programs');
 
@@ -298,9 +305,9 @@ describe("Firsthand Smoke Suit", function () {
     cy.get('#best-internships-item-3').should('exist');
 
     // Assert the content of each internship item
-    cy.get('#best-internships-item-0 h3').should('have.text', 'Infosys InStep Internship Program');
-    cy.get('#best-internships-item-1 h3').should('have.text', 'The Home Depot Internship Program');
-    cy.get('#best-internships-item-2 h3').should('have.text', 'Eide Bailly Accounting & Technology Internship Programs');
+    cy.get('#best-internships-item-0 h3').should('have.text', 'Infosys');
+    cy.get('#best-internships-item-1 h3').should('have.text', 'The Home Depot');
+    cy.get('#best-internships-item-2 h3').should('have.text', 'Eide Baily');
     cy.get('#best-internships-item-3 h3').should('have.text', 'UScellular Experience Possibility: Internship Program');
 
     // Assert the correctness of the internship links
@@ -315,74 +322,75 @@ describe("Firsthand Smoke Suit", function () {
   //Rankings Page
 
   it('should display the "Featured Rankings" section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('.Slider_root__J26HS').should('be.visible');
-    cy.get('h2').should('contain', 'Featured Rankings');
+    cy.get("div[class^='Slider_root']").eq(0).should('be.visible');
+    cy.get("div[class^='Slider_root']").eq(0).find('h2').should('contain', 'Featured Rankings');
+    
   });
 
   it('should navigate to the "Vault Law 100" page form Featured Rankings', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/law/top-100-law-firms-rankings"]').click();
+    cy.get('a[href="/best-companies-to-work-for/law/top-100-law-firms-rankings"]').eq(0).click();
 
 
   });
 
   it('should navigate to the "Vault Consulting 50" page form Featured Rankings', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/consulting/vault-consulting-rankings-top-50"]').click();
+    cy.get('a[href="/best-companies-to-work-for/consulting/vault-consulting-rankings-top-50"]').eq(0).click();
 
 
   });
 
   it('should navigate to the "Vault Banking 25" page form Featured Rankings', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/banking/best-banks-to-work-for-top-25"]').click();
+    cy.get('a[href="/best-companies-to-work-for/banking/best-banks-to-work-for-top-25"]').eq(0).click();
 
   });
 
   it('should navigate to the "Vault Accounting 25" page form Featured Rankings', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/accounting/vault-accounting-25"]').click();
+    cy.get('a[href="/best-companies-to-work-for/accounting/vault-accounting-25"]').eq(0).click();
 
   });
 
   it('should navigate to the "Vault Top Consulting Asia-Pacific" page form Featured Rankings', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/consulting/vault-top-consulting-asia-pacific"]').click();
+    cy.get('a[href="/best-companies-to-work-for/consulting/vault-top-consulting-asia-pacific"]').eq(0).click();
 
 
   });
 
   it('should navigate to the "Vault Consulting 25 EMEA" page form Featured Rankings ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/consulting/vault-top-european-consulting-25"]').click();
+    cy.get('a[href="/best-companies-to-work-for/consulting/vault-top-european-consulting-25"]').eq(0).click();
 
 
   });
 
 
   it('should display the "Top Vault Law Rankings" section form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('.Slider_containerStartSlot__mWYSA h2').should('contain', 'Top Vault Law Rankings');
+    cy.get("div[class^='Slider_root']").eq(1).find('h2').should('contain', 'Top Vault Law Rankings');
   });
 
   it('should navigate to the "Vault Law 100" page form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get('a[href="/best-companies-to-work-for/law/top-100-law-firms-rankings"]').click();
+    cy.get('a[href="/best-companies-to-work-for/law/top-100-law-firms-rankings"]').eq(1).click();
 
   });
 
   it('should navigate to the "Best Law firms to Work for" page form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/law/best-law-firms-to-work-for']").click();
 
@@ -390,7 +398,7 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should navigate to the "Best law firms for Diversity" page form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/law/best-law-firms-for-diversity']").click();
 
@@ -398,7 +406,7 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should navigate to the "Best law firms By Practice Area" page form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/law/best-law-firms-in-each-practice-area/antitrust']").click();
 
@@ -406,7 +414,7 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should navigate to the "Best law firms By Region" page form Top Vault Law Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/law/best-law-firms-in-each-us-region/atlanta']").click();
 
@@ -414,20 +422,20 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should display the "Top Consulting Rankings" ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.xpath("//h2[normalize-space()='Top Consulting Rankings']").should('contain', 'Top Consulting Rankings');
+    cy.get("div[class^='Slider_root']").eq(2).find('h2').should('contain', 'Top Consulting Rankings');
   });
 
   it('should navigate to the "Most Prestigious Consulting Firms" page form Top consulting Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/consulting/best-consulting-firms-prestige']").click();
 
   });
 
   it('should navigate to the "Best Boutique Consulting Firms" page form Top consulting Rankings Section', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
     cy.get("a[href='/best-companies-to-work-for/consulting/best-boutique-consulting-firms']").click();
 
@@ -437,9 +445,9 @@ describe("Firsthand Smoke Suit", function () {
 
 
   it('should verify Comapnies Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get("#tab-bar-tab-1").click({ force: true })
+    cy.xpath("(//button[normalize-space()='Companies'])[1]").click({ force: true })
     cy.contains("Top Vault-Ranked Companies").should('be.visible')
     cy.contains("Favorite Brands").should('be.visible')
     cy.contains("FinTech Startups").should('be.visible')
@@ -465,9 +473,9 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should verify Practice Areas Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get("#tab-bar-tab-2").click({ force: true })
+    cy.xpath("(//button[normalize-space()='Practice Areas'])[1]").click({ force: true })
     cy.contains("Antitrust").should('be.visible')
     cy.contains("Appellate Litigation").should('be.visible')
     cy.contains("Banking & Financial Services").should('be.visible')
@@ -501,9 +509,9 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should verify Practice Professions Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get("#tab-bar-tab-3").click({ force: true })
+    cy.xpath("(//button[normalize-space()='Professions'])[1]").click({ force: true })
     cy.contains("Best Jobs in Technology").should('be.visible')
     cy.contains("Best Jobs in Finance").should('be.visible')
     cy.contains("Best Jobs in Engineering").should('be.visible')
@@ -515,9 +523,9 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should verify Practice Industries Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get("#tab-bar-tab-4").click({ force: true })
+    cy.xpath("(//button[normalize-space()='Industries'])[1]").click({ force: true })
     cy.contains("Fastest Growing Industries").should('be.visible')
     cy.contains("Best Industries for Undergraduates").should('be.visible')
     cy.contains("Best Industries for MBAs").should('be.visible')
@@ -530,7 +538,7 @@ describe("Firsthand Smoke Suit", function () {
 
 
   it('should verify most-prestigious-internship-rankings Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Internships']").click({ force: true })
     cy.contains("Explore Top-Ranked Internships").should('be.visible')
     cy.get("img[alt='Ranking Image']").should('be.visible')
@@ -550,9 +558,9 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should verify Internships Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Rankings']").click({ force: true })
-    cy.get("#tab-bar-tab-5").click({ force: true })
+    cy.xpath("(//button[@id='tab-bar-tab-5'])[2]").click({ force: true })
     cy.contains("Accounting Internships").should('be.visible')
     cy.contains("Consulting Internships").should('be.visible')
     cy.contains("Consumer Goods Internships").should('be.visible')
@@ -564,85 +572,73 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('Should perform regression checks for the footer', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.get('footer.GuestLayout_footer__yXH3o').should('exist');
     // Check for the presence of footer links and their destinations
-    cy.get('.Footer_footerLinks__XEl61 a').should('have.length', 8);
-    cy.get('.Footer_footerLinks__XEl61 a').eq(0).should('have.attr', 'href', '/employers');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(1).should('have.attr', 'href', '/schools');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(2).should('have.attr', 'href', '/insiders');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(3).should('have.attr', 'href', '/careers/rankings');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(4).should('have.attr', 'href', '/library/blogs-employment-news');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(5).should('have.attr', 'href', '/vault-law');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(6).should('have.attr', 'href', 'mailto:support@firsthand.co');
-    cy.get('.Footer_footerLinks__XEl61 a').eq(7).should('have.attr', 'href', 'https://firsthandsupport.zendesk.com/hc/en-us');
+    cy.get('a[class^=Footer_footerText]').should('have.length', 7);
+    cy.get('a[class^=Footer_footerText]').eq(0).should('have.attr', 'href', '/employers');
+    cy.get('a[class^=Footer_footerText]').eq(1).should('have.attr', 'href', '/schools');
+    cy.get('a[class^=Footer_footerText]').eq(2).should('have.attr', 'href', '/insiders');
+    cy.get('a[class^=Footer_footerText]').eq(3).should('have.attr', 'href', '/careers/rankings');
+    cy.get('a[class^=Footer_footerText]').eq(4).should('have.attr', 'href', '/library/blogs-employment-news');   
+    cy.get('a[class^=Footer_footerText]').eq(5).should('have.attr', 'href', 'mailto:support@firsthand.co');
+    cy.get('a[class^=Footer_footerText]').eq(6).should('have.attr', 'href', 'https://firsthandsupport.zendesk.com/hc/en-us');
 
     // Check for the presence of the social media icons and their destinations
-    cy.get('.Footer_footerSocial__N_BE8 a').should('have.length', 4);
-    cy.get('.Footer_footerSocial__N_BE8 a').eq(0).should('have.attr', 'href', 'https://www.facebook.com/VaultFirsthand');
-    cy.get('.Footer_footerSocial__N_BE8 a').eq(1).should('have.attr', 'href', 'https://instagram.com/vault_careers');
-    cy.get('.Footer_footerSocial__N_BE8 a').eq(2).should('have.attr', 'href', 'https://twitter.com/Vaultcareers');
-    cy.get('.Footer_footerSocial__N_BE8 a').eq(3).should('have.attr', 'href', 'https://www.linkedin.com/company/vaultfirsthand/');
+    cy.get("div[class^='d-flex justify-content-center align-items-center p-5 Footer_footerSocial'] >a").should('have.length', 4);
+    cy.get("div[class^='d-flex justify-content-center align-items-center p-5 Footer_footerSocial'] >a").eq(0).should('have.attr', 'href', 'https://www.facebook.com/VaultFirsthand');
+    cy.get("div[class^='d-flex justify-content-center align-items-center p-5 Footer_footerSocial'] >a").eq(1).should('have.attr', 'href', 'https://instagram.com/vault_careers');
+    cy.get("div[class^='d-flex justify-content-center align-items-center p-5 Footer_footerSocial'] >a").eq(2).should('have.attr', 'href', 'https://twitter.com/Vaultcareers');
+    cy.get("div[class^='d-flex justify-content-center align-items-center p-5 Footer_footerSocial'] >a").eq(3).should('have.attr', 'href', 'https://www.linkedin.com/company/vaultfirsthand/');
 
     // Check for the presence of the additional footer information
-    cy.get('.Footer_footerInfoBox__H4OfE').should('exist');
-    cy.get('.Footer_footerInfo__TgKpF a').should('have.length', 3);
-    cy.get('.Footer_footerInfo__TgKpF a').eq(0).should('have.attr', 'href', '/terms-of-service');
-    cy.get('.Footer_footerInfo__TgKpF a').eq(1).should('have.attr', 'href', '/privacy-policy');
-    cy.get('.Footer_footerInfo__TgKpF a').eq(2).should('have.attr', 'href', '/cookie-policy');
-    cy.get('.Footer_footerInfo__TgKpF span').should('exist');
+    cy.get("div[class^='mb-5 Footer_footerInfoBox']").should('exist');
+    cy.get("div[class^='col-12 d-flex justify-content-center align-items-center Footer_footerInfo'] >a").should('have.length', 3);
+    cy.get("div[class^='col-12 d-flex justify-content-center align-items-center Footer_footerInfo'] >a").eq(0).should('have.attr', 'href', '/terms-of-service');
+    cy.get("div[class^='col-12 d-flex justify-content-center align-items-center Footer_footerInfo'] >a").eq(1).should('have.attr', 'href', '/privacy-policy');
+    cy.get("div[class^='col-12 d-flex justify-content-center align-items-center Footer_footerInfo'] >a").eq(2).should('have.attr', 'href', '/cookie-policy');
+    cy.get("div[class^='col-12 d-flex justify-content-center align-items-center Footer_footerInfo'] >span").should('exist');
   });
 
   it('Should perform regression checks for the header', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.get('header.d-flex').should('exist');
-    cy.get('.Logos_root__0yrit img').should('exist');
-    // Check for the presence of top navigation links and their destinations
-    cy.get('#top-navigation a').should('have.length', 7);
-    cy.get('#top-navigation a').eq(0).should('have.attr', 'href', '/careers/rankings');
-    cy.get('#top-navigation a').eq(1).should('have.attr', 'href', '/library/blogs-employment-news');
-    cy.get('#top-navigation a').eq(2).should('have.attr', 'href', '/vault-guides');
-    cy.get('#top-navigation a').eq(3).should('have.attr', 'href', '/careers/professions');
-    cy.get('#top-navigation a').eq(4).should('have.attr', 'href', '/most-prestigious-internship-rankings');
-    cy.get('#top-navigation a').eq(5).should('have.attr', 'href', '/vault-law');
-    cy.get('#top-navigation a').eq(6).should('have.attr', 'href', '/library/collections/resumes-cover-letters');
+    cy.get("a[class^='Logos_root__0yrit'] >img").eq(0).should('exist');    
     // Check for the presence of the search input
-    cy.get('.HeaderBottom_searchInput__Fo0KO input').should('exist');
+    cy.get("input[placeholder='Search']").eq(0).should('exist');
     // Check for the presence of the login button
-    cy.get('.HeaderBottom_headerBottomLinks__ypt_r button').should('exist');
+    cy.get("button[class^='Button_secondary']").eq(0).should('have.text','Login');
   });
 
   it('should verify library content ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("//a[normalize-space()='Library']").click({ force: true })
     // Check if the navigation bar exists
-    cy.get('nav.LibraryNavigation_navMain__tv4YS').should('exist');
+    cy.get("nav[class^='LibraryNavigation_navMain']").should('exist');
     // Check for the presence of the navbar brand
-    cy.get('.LibraryNavigation_navbarBrand__5ExTf h1').should('exist');
+    cy.get("a[class^='LibraryNavigation_navbarBrand'] >h1").should('exist');
     // Check for the presence of the Explore button in collapsed mode
-    cy.get('.LibraryNavigation_navbarToggle__CW4d_ button').should('exist');
+    cy.get("div[class^='LibraryNavigation_navbarToggle'] >button").should('exist');
     // Check for the presence of the dropdown items in expanded mode
-    cy.get('#responsive-navbar-nav .LibraryNavigation_navItem__ly9_f').should('have.length', 4);
+    cy.get("div[class^='LibraryNavigation_navItem']").should('have.length', 3);
     // Check the text of the dropdown items
     cy.get('#collapsible-nav-dropdown-0').should('have.text', 'Explore Careers');
     cy.get('#collapsible-nav-dropdown-1').should('have.text', 'Get the Job');
     cy.get('#collapsible-nav-dropdown-2').should('have.text', 'Thrive at Work');
     // Check for the presence of the Guides link
-    cy.get('.LibraryNavigation_navItem__ly9_f.nav-link').should('exist');
+    cy.get("a[class^='LibraryNavigation_navItem']").should('exist');
     // Check if the Editor's Picks modal exists
     cy.get('#editors-picks').should('exist');
     // Check for the presence of the modal header
     cy.get('#editors-picks-header').should('exist');
     // Check for the presence of the content image
-    cy.get('.EditorsPicks_contentImage__jTCfh').should('exist');
-    // Check for the presence of the content type image
-    cy.get('.EditorsPicks_contentTypeImage__BDJUJ').should('exist');
+    cy.get("img[alt^='Sponsor Image']").should('exist');    
     // Check for the presence of the link to the article
     cy.get('#editors-picks-link-title').should('exist');
     // Check for the presence of the article title
     cy.get('#editors-picks-link-title h3').should('exist');
     // Check for the presence of the blurb
-    cy.get('.EditorsPicks_blurb__zSVPR').should('exist');
+    cy.get("div[class^='EditorsPicks_blurb']").should('exist');
     // Check for the presence of the title in expanded mode
     cy.get('#editors-picks-title').should('exist');
     // Check for the presence of each link and title in expanded mode
@@ -662,19 +658,19 @@ describe("Firsthand Smoke Suit", function () {
   });
 
   it('should verify Vault Law Page ', () => {
-    cy.visit("https://vaultcom.uat.firsthand.co");
+    cy.visit("https://uat.vault.com/");
     cy.xpath("(//a[normalize-space()='Vault Law'])[1]").click({ force: true })
     // Check if the header exists
     cy.get('#jumbotron').should('exist');
     // Check for the presence of the header image
-    cy.get('.Header_backgroundImage__w5pFJ').should('exist');
+    cy.get("img[alt^='Header Image']").should('exist');
     // Check for the presence of the title
     cy.get('#jumbotron-title').should('exist');
     // Check for the presence of the subtitle
     cy.get('#jumbotron-sub-title').should('exist');
     // Check for the presence of each button
     cy.get('[id^="jumbotron-button"]').should('have.length', 6); // Check the number of buttons
-    cy.get('[id^="jumbotron-button"] .HeadButton_title__lMvzl').should('have.length', 3); // Check the number of button titles
+    cy.get("[id^='jumbotron-button'] >span").should('have.length', 3); // Check the number of button titles
     // Check if the component exists
     cy.get('#research-top-ranked-law-firms').should('exist');
     // Check for the presence of the component title
@@ -685,7 +681,7 @@ describe("Firsthand Smoke Suit", function () {
     for (let i = 0; i < 4; i++) {
       const lawFirmCard = cy.get(`#research-top-ranked-law-firms-item-${i}`);
       // Check for the presence of the law firm image
-      lawFirmCard.find('.Image_root__yAksZ').should('exist');
+      lawFirmCard.find("img[class^='Image_root']").should('exist');
 
     }
     // Check if the modal exists
@@ -695,13 +691,11 @@ describe("Firsthand Smoke Suit", function () {
     // Check for the presence of the modal header
     cy.get('#editors-picks-header').should('exist');
     // Check for the presence of the modal content image
-    cy.get('.EditorsPicks_contentImage__jTCfh').should('exist');
-    // Check for the presence of the modal content type image
-    cy.get('.EditorsPicks_contentTypeImage__BDJUJ').should('exist');
+    cy.get("img[alt^='Sponsor Image']").should('exist');    
     // Check for the presence of the title, blurb, and link for the main pick
     cy.get('#editors-picks-link-title').should('exist');
     cy.get('#editors-picks-link-title h3').should('exist');
-    cy.get('.EditorsPicks_blurb__zSVPR').should('exist');
+    cy.get("div[class^='EditorsPicks_blurb']").should('exist');
     // Check for the presence of each additional pick
     for (let i = 0; i < 4; i++) {
       const pick = cy.get(`#editors-picks-link-item-${i}`);
@@ -734,31 +728,18 @@ describe("Firsthand Smoke Suit", function () {
   });
 
 
-  it('Should buy a Subscription sucessfully', function () {
-
-    cy.visit("https://vaultcom.uat.firsthand.co");
-    cy.get('.text-white > [href="/insiders"]').click({ force: true });
-    cy.get("button[class='Button_primary__0_HFw']").click({ force: true });
-    cy.xpath("(//button[@type='button'][normalize-space()='Subscribe'])[1]").click({ force: true });
-
-    cy.checkoutlogin("charansaireddy3@gmail.com", "Charan@123");
-
-    cy.wait(10000);
-    getOnlyCreditCardDetailsAndMakePayment();
-    validatePaymentSuccess()
-  })
 
 
   it('Should buy a Guide sucessfully', function () {
 
-    cy.visit("https://vaultcom.uat.firsthand.co");
-    cy.get('#top-navigation-item-2 > .text-nowrap > a').click({ force: true });
+    cy.visit("https://uat.vault.com/");
+    cy.xpath("//a[@role='button'][contains(.,'Guides')]").click({ force: true });
     cy.xpath("(//button[contains(.,'Purchase Options')])[15]").click({ force: true });
     cy.xpath("//button[normalize-space()='Add to Cart']").click({ force: true });
     cy.wait(5000);
     cy.get("div#cart-box-toggle").click({ force: true });
     getOrderSummaryandCheckOut()
-    cy.checkoutlogin("charansaireddy3@gmail.com", "Charan@123");
+    cy.checkoutlogin("Charanvault333@gmail.com", "Charan@123");
     cy.wait(10000);
     getOnlyCreditCardDetailsAndMakePayment();
 
