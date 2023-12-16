@@ -13,7 +13,7 @@ describe("Firsthand Smoke Suit", function () {
 
   })
 
-  // login function
+  // login function for VFH
   function login(username, password) {
 
     cy.visit('https://uat.firsthand.co/');  // Visit the login page    
